@@ -1,0 +1,30 @@
+.header {
+    width: 100%;
+    margin: 0;
+    justify-content: end;
+    background-color: #ffffff;
+    padding: 20px 10px;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.1);
+    .header__content {
+        display: flex;
+        max-width: 60%;
+        margin: auto;
+        gap: 50px;
+        & h3:first-child {
+            margin-right: auto;
+        }
+        & h5 {
+            align-self: center;
+            a {
+                font-weight: 400;
+            }
+        }
+    }
+}
+a{
+    color: #1a237e;
+    font-weight: 900;
+}
+.icon {
+    font-size: 70px;
+}

@@ -1,33 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Navigate, Route, Routes } from 'react-router'
+import './App.scss'
+import Header from './components/layout/header/Header'
+import NotFound from './routes/not-found/Not-found'
+import { Suspense } from 'react'
+import { lazy } from 'react'
+import Body from './components/layout/main/Main'
+import Loading from './components/layout/loading/Loading'
+import { useSelector } from 'react-redux'
+import { RootState } from './redux'
+
+const Main = lazy(() => import('./routes/main/Main'))
+const Profile = lazy(() => import('./routes/profile/Profile'))
+const Registration = lazy(() => import('./routes/registration/Registration'))
+const Authorization = lazy(() => import('./routes/authorization/Authorization'))
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const user = useSelector((state: RootState) => state.user);
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header />
+      <Body>
+        <Routes>
+          <Route path="/" element={
+            <Suspense fallback={<Loading />}>
+              <Main />
+            </Suspense>
+          } />
+          <Route
+            path="/authorization"
+            element={
+              !user.data ? (
+                <Suspense fallback={<Loading />}>
+                  <Authorization />
+                </Suspense>
+              ) : (
+                <Navigate to="/profile" replace />
+              )
+            }
+          />
+
+          {/* Защищённый маршрут */}
+          <Route
+            path="/profile"
+            element={
+              user.data ? (
+                <Suspense fallback={<Loading />}>
+                  <Profile />
+                </Suspense>
+              ) : (
+                <Navigate to="/authorization" replace />
+              )
+            }
+          />
+          <Route path="/registration" element={<Suspense fallback={<Loading />}><Registration /></Suspense>} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Body>
     </>
   )
 }

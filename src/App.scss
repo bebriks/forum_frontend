@@ -1,0 +1,22 @@
+* {
+  box-sizing: border-box; 
+  margin: 0;
+  text-decoration: none;
+  font-family: "Raleway", serif !important;
+}
+body {
+  width: 100%;
+  height: 100vh;
+  background-color: #fafafa;
+}
+:root {
+  -webkit-font-feature-settings: "lnum";
+  -moz-font-feature-settings: "lnum";
+  font-feature-settings: "lnum";
+}
+#root {
+  display: flex;
+  margin: 0 auto;
+  flex-flow: column;
+  align-items: center;
+}
