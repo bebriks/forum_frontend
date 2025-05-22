@@ -75,9 +75,9 @@ export default function PostCard({ data }: { data: Post }) {
         }
         action={ data.username === user.data?.username ? 
           <>
-          <IconButton aria-describedby={id} variant="contained" onClick={handleClick}>
+          <Button aria-describedby={id} variant="contained" onClick={handleClick}>
             <MoreVertIcon />
-          </IconButton>
+          </Button>
             <Popover
               id={id}
               open={open}

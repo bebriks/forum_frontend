@@ -1,21 +1,15 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { PlusIcon } from '../icons/icons';
-import { Button, TextField, Tooltip } from '@mui/material';
-import { createPost, postSelector } from '../../redux/modules/posts';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { TextField, Tooltip } from '@mui/material';
+import { createPost } from '../../redux/modules/posts';
+import { useAppDispatch } from '../../hooks';
 import { useState } from 'react';
 
 export default function PostCardNew() {
-  const post = useAppSelector(postSelector)
   const dispatch = useAppDispatch()
   const [expanded, setExpanded] = useState(false)
   const [title, setTitle] = useState("")

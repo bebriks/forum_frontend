@@ -17,6 +17,10 @@ export type Post = {
     username: string
 }
 
+export type Posts = {
+    items: Post[],
+}
+
 export type PostResponse = {
     items: Post[],
     pagination : {

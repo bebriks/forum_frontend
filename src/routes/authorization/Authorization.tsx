@@ -1,16 +1,16 @@
-import { lazy, Suspense, useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 import { Stack, TextField, Button, Typography, Box } from '@mui/material'
 import { login } from '../../redux/modules/user'
 import Loading from '../../components/layout/loading/Loading'
 import '../../App.scss'
+import { useAppDispatch } from '../../hooks'
 
 function Authorization() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,8 +24,8 @@ function Authorization() {
     }
 
     try {
-      await dispatch(login(username, password))
-      navigate('/profile'); // Перенаправление после успешного входа
+      dispatch(login(username, password))
+      navigate('/profile')
     } catch (err) {
       setError('Неверный email или пароль');
       console.error('Ошибка авторизации:', err);

@@ -1,14 +1,7 @@
 import { DeletePost, GetAllPosts, POSTPost, UpdatePost } from '../../api/api';
-import { Post, PostRequest, PostResponse, UpdatePostRequest } from '../../api/types';
-import { Action, Dispatch, ThunkAction} from '@reduxjs/toolkit';
-import { RootState } from '../../store';
-
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->
+import { PostRequest, PostResponse, UpdatePostRequest } from '../../api/types';
+import { Dispatch } from '@reduxjs/toolkit';
+import { AppThunk, RootState } from '../../store';
 
 type PostState = {
   posts: PostResponse;
@@ -48,7 +41,7 @@ interface PostsCreatingAction {
 
 interface PostsSuccessAction {
   type: typeof POSTS_SUCCESS;
-  payload: Post[];
+  payload: PostResponse
 }
 
 interface PostsErrorAction {
@@ -81,9 +74,10 @@ export const postCreating = (): PostActionTypes => ({
   type: POSTS_CREATING,
 })
 
-export const postsSuccess = (posts: Post[]): PostActionTypes => ({
+export const postsSuccess = (data: PostResponse): PostActionTypes => (
+  {
   type: POSTS_SUCCESS,
-  payload: posts,
+  payload: data
 })
 
 export const postsError = (error: string): PostActionTypes => ({
@@ -96,8 +90,10 @@ export const loadPosts = (username?: string, createdAt?: string, page?: number, 
     dispatch(postsLoading());
     
     try {
-      const posts = await GetAllPosts(username, createdAt, page, limit);
-      dispatch(postsSuccess(posts));
+      const posts: PostResponse = await GetAllPosts(username, createdAt, page, limit);
+      if(posts?.items) {
+        dispatch(postsSuccess(posts));
+      }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       console.log(errorMessage)
@@ -112,6 +108,7 @@ export const loadProfilePosts = (username: string) => {
     
     try {
       const posts = await GetAllPosts(username);
+      console.log(posts)
       dispatch(postsSuccess(posts));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -134,7 +131,7 @@ export const createPost = (data: PostRequest): AppThunk => {
     }
   };
 };
-//: Dispatch<PostActionTypes>
+
 export const deletePost = (id: string): AppThunk => {
   return async (dispatch) => {
     dispatch(postsDeleting())
@@ -152,14 +149,16 @@ export const deletePost = (id: string): AppThunk => {
 
 export const updatePost = (data: UpdatePostRequest, username?: string): AppThunk => {
   return async (dispatch) => {
-    const storedUserData = JSON.parse(localStorage.getItem('userData'))
     try {
       dispatch({ type: POSTS_UPDATING, payload: data });
       dispatch({ type: POSTS_LOADING });
       
       await UpdatePost(data)
-      username ? dispatch(loadProfilePosts(username)) : dispatch(loadPosts())
-      
+      if(username) {
+        dispatch(loadProfilePosts(username)) 
+      } else {
+        dispatch(loadPosts())
+      }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       dispatch({ type: POSTS_ERROR, payload: errorMessage });
@@ -179,17 +178,30 @@ export function postsReducer(
         error: null,
       };
     case POSTS_SUCCESS:
+      
+      { const payload = action.payload ?? { items: [], pagination: { currentPage: 1, totalItems: 0, totalPages: 1 } };
+      
+      const currentPage = payload.pagination?.currentPage ?? 1;
+
+      const existingItems = state.posts?.items ?? [];
+      
+      const mergedItems = currentPage === 1 
+        ? payload.items ?? []
+        : [...existingItems, ...(payload.items ?? [])];
+
       return {
         ...state,
         posts: {
-          items: action.payload.pagination.currentPage === 1 
-            ? action.payload.items
-            : [...(state.posts?.items || []), ...action.payload.items],
-          pagination: action.payload.pagination
+          items: mergedItems,
+          pagination: {
+            currentPage: payload.pagination?.currentPage ?? 1,
+            totalItems: payload.pagination?.totalItems ?? mergedItems.length,
+            totalPages: payload.pagination?.totalPages ?? 1
+          }
         },
         loading: false,
-      };
-      
+        error: null
+    }; }  
     case POSTS_ERROR:
       return {
         ...state,

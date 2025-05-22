@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material'
 import '../../../App.scss'
 
-import { useAppDispatch, useAppSelector } from "../../../hooks"
+import { useAppSelector } from "../../../hooks"
 import { userSelector } from '../../../redux/modules/user'
 
 import styles from './Header.module.scss'
@@ -10,8 +10,6 @@ import { NavLink } from 'react-router'
 
 function Header() {
   const user = useAppSelector(userSelector)
-  const dispatch = useAppDispatch()
-  console.log(user)
   return (
     <div className={styles.header}>
       <div className={styles.header__content}>
