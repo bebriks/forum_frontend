@@ -21,7 +21,6 @@ export const Login = async(data: TLoginUser) => {
         const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/account/login`, data, {
             headers: {
             'Content-Type': 'application/json',
-            //'Authorization': `Bearer ${localStorage.getItem('access-token')}`
         }})
         if (response.status === 200) {
             console.log(response)
@@ -47,22 +46,6 @@ export const Logout = async() => {
         throw new Error(`${error}`)
     }
 }
-
-/* export const GetProfile = async() => {
-    try {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-            },
-        })
-        if (response.status === 200) {
-            return response.data
-        }
-    } catch (error) {
-        throw new Error(`${error}`)
-    }
-} */
 
 export const POSTPost = async(data: PostRequest) => {
     try {

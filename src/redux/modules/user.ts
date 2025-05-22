@@ -1,8 +1,8 @@
 import { TUser } from "../../api/types"
 import { Dispatch } from "redux"
 import { Login, Registration } from "../../api/api"
-import { ThunkAction } from "redux-thunk";
 import { RootState } from "..";
+import { AppThunk } from "../../store";
 
 const USER_STORAGE_KEY = 'userData';
 
@@ -59,8 +59,8 @@ type UserAction =
   | { type: typeof FETCH_USER_SUCCESS; payload: TUser }
   | { type: typeof FETCH_USER_FAILURE; payload: string }
 
-// Thunk actions
-export const login = (username: string, password: string): ThunkAction<void, RootState, unknown, UserAction> => {
+//: ThunkAction<void, RootState, unknown, UserAction>
+export const login = (username: string, password: string): AppThunk => {
   return async (dispatch) => {
     dispatch({ type: LOGIN_REQUEST });
     
@@ -79,7 +79,7 @@ export const login = (username: string, password: string): ThunkAction<void, Roo
   };
 };
 
-export const register = (username: string, password: string): ThunkAction<void, RootState, unknown, UserAction> => {
+export const register = (username: string, password: string): AppThunk => {
   return async (dispatch) => {
     dispatch({ type: REGISTER_REQUEST });
     
@@ -111,8 +111,8 @@ export const logout = () => {
   };
 };
 
-export const fetchUserData = (): ThunkAction<void, RootState, unknown, UserAction> => {
-  return async (dispatch) => {
+export const fetchUserData = () => {
+  return async (dispatch: Dispatch<UserAction>) => {
     dispatch({ type: FETCH_USER_REQUEST });
       if (initialState.data) {
         dispatch({ type: FETCH_USER_SUCCESS, payload: initialState.data });
@@ -146,7 +146,6 @@ const getInitialState = (): UserState => {
 
 const initialState: UserState = getInitialState();
 
-// Reducer
 export function userReducer(
   state: UserState = initialState,
   action: UserAction
@@ -162,7 +161,6 @@ export function userReducer(
       };
       
     case LOGIN_SUCCESS:
-    case REGISTER_SUCCESS:
     case FETCH_USER_SUCCESS:
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(action.payload));
       return {

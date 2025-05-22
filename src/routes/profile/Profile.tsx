@@ -94,7 +94,6 @@ const ProfilePage: React.FC = () => {
             <CardContent>
               <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
                 <Avatar
-                  //src={profile.avatarUrl}
                   sx={{ width: 120, height: 120, mb: 2 }}
                 />
                 <Typography variant="h5" component="div">

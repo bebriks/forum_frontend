@@ -38,8 +38,6 @@ function App() {
               )
             }
           />
-
-          {/* Защищённый маршрут */}
           <Route
             path="/profile"
             element={

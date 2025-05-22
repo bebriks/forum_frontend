@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 import { Stack, TextField, Button, Typography, Box, Alert } from '@mui/material'
 import '../../App.scss'
 import { register } from '../../redux/modules/user'
+import { useAppDispatch } from '../../hooks'
 
 function Registration() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,7 +23,7 @@ function Registration() {
     }
 
     try {
-      dispatch(register(username, password))
+      dispatch(register(username, password) )
       navigate('/profile');
     } catch (err) {
       setError('Неверный email или пароль');
